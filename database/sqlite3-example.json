@@ -1,5 +1,5 @@
 {
-  "type": "sqlite3",
+  "type": "sqlite",
   "path_to_db_file": "sqlite3.db",
   "max_open_connections": 0
 }
