@@ -1,6 +1,10 @@
 # Go-ToolBox #
 Repositório com o objetivo de compartilhar a "caixa de ferramentas" que utilizamos na empresa, para agilizar o nosso processo de desenvolvimento de soluções tecnológicas
 
+```sh
+go get -u github.com/yggbrazil/go-toolbox
+```
+
 ## api ##
 
 [api](https://github.com/yggbrazil/go-toolbox/tree/master/api) é um wrapper do [Echo](https://github.com/labstack/echo) com a configurações básicas para criar uma API REST em poucas linhas
@@ -50,7 +54,7 @@ Repositório com o objetivo de compartilhar a "caixa de ferramentas" que utiliza
 
 ## log ##
 
-[log](https://github.com/yggbrazil/go-toolbox/tree/master/log) É uma lib para lidar com log, para log em arquivo ou no terminal com a linha do arquivo com o erro 
+[log](https://github.com/yggbrazil/go-toolbox/tree/master/log) É uma lib para lidar com log, para log em arquivo ou no terminal com a linha do arquivo com o erro
 
 ## path ##
 [path](https://github.com/yggbrazil/go-toolbox/tree/master/path) É uma lib com funções relacionadas à diretórios
