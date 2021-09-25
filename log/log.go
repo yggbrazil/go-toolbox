@@ -36,16 +36,6 @@ func Error(e error) {
 	fmt.Printf("ERROR: %s | FILE: %s:%d | LINE: %d | FUNCTION: %s | HOSTNAME: %s\n", e.Error(), file, line, line, f.Name(), hostname)
 }
 
-// Println use the same Println for the standart log lib
-func Println(i ...interface{}) {
-	log.Println(i...)
-}
-
-// Fatal use the same Fatal for the standart log lib
-func Fatal(i ...interface{}) {
-	log.Fatal(i...)
-}
-
 // Debug is a function for print in terminal if the variable debug it's true
 func Debug(a ...interface{}) {
 	if debug {

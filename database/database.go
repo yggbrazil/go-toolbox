@@ -12,8 +12,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type dbConfig struct {
+type Config struct {
 	FilePath           string
+	ID                 string `json:"id"`
 	PathToDBFile       string `json:"path_to_db_file"`
 	Type               string `json:"type"`
 	Host               string `json:"host"`
@@ -34,11 +35,15 @@ func get(filePath string) (*sqlx.DB, error) {
 	return nil, fmt.Errorf(`Error database not found. File path: %s`, filePath)
 }
 
-func connect(config dbConfig) (*sqlx.DB, error) {
+func connect(config Config) (*sqlx.DB, error) {
 	var (
 		db  *sqlx.DB
 		err error
 	)
+
+	if db, found := connections[config.ID]; found {
+		return db, nil
+	}
 
 	switch config.Type {
 	case "postgres":
@@ -82,16 +87,21 @@ func connect(config dbConfig) (*sqlx.DB, error) {
 	return db, nil
 }
 
+// ConnectByConfig Create ou get a database connection through
+// a configuration
+func ConnectByConfig(c Config) (*sqlx.DB, error) {
+	return connect(c)
+}
+
 // GetByFile Create a database connection through
 // the path of a file
 func GetByFile(filePath string) (*sqlx.DB, error) {
-
 	if db, err := get(filePath); err == nil {
 		return db, nil
 	}
 
 	var (
-		config dbConfig
+		config Config
 		err    error
 	)
 

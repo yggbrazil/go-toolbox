@@ -7,13 +7,13 @@ func TestNew(t *testing.T) {
 		Name  string
 		Phone string
 	}{
-		Name:  "Henrique",
+		Name:  "Betiolo",
 		Phone: "12345678",
 	}
 
 	q := New("SELECT * FROM Person WHERE ?", true)
 
-	q.AddIf(filter.Name == "Henrique", " AND Person.Name = ? ", filter.Name)
+	q.AddIf(filter.Name == "Betiolo", " AND Person.Name = ? ", filter.Name)
 	q.AddIf(filter.Phone != "", " AND Person.Phone = ? ", filter.Phone)
 	q.Add(" ORDER BY Person.Id")
 
