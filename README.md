@@ -1,3 +1,5 @@
+[![Test](https://github.com/yggbrazil/go-toolbox/actions/workflows/test.yml/badge.svg)](https://github.com/yggbrazil/go-toolbox/actions/workflows/test.yml)
+
 # Go-ToolBox #
 Repositório com o objetivo de compartilhar a "caixa de ferramentas" que utilizamos na empresa, para agilizar o nosso processo de desenvolvimento de soluções tecnológicas
 
@@ -32,6 +34,9 @@ go get -u github.com/yggbrazil/go-toolbox
 ## format ##
 
 [format](https://github.com/yggbrazil/go-toolbox/tree/master/format) É um lib com funções de formatação para diversos tipos
+## gcp_pubsub ##
+
+[gcp_pubsub](https://github.com/yggbrazil/go-toolbox/tree/master/gcp_pubsub) É um wrapper sobre a lib de PubSub da GCP
 
 ## grpc ##
 

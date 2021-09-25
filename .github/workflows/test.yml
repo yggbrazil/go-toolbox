@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get dependencies
+        run: |
+          mkdir -p ~/.ssh
+          eval "$(ssh-agent -s)"
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          cat github.key | ssh-add -
+          echo "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+          git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+          go get -v -t -d ./...
+          if [ -f Gopkg.toml ]; then
+              curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+              dep ensure
+          fi
+
+      - name: Test
+        run: make test
