@@ -5,6 +5,7 @@ go 1.17
 require (
 	cloud.google.com/go v0.93.3 // indirect
 	cloud.google.com/go/pubsub v1.17.0 // indirect
+	github.com/aidarkhanov/nanoid/v2 v2.0.5 // indirect
 	github.com/amdonov/xmlsig v0.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
