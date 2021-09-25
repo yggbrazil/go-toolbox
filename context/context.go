@@ -10,14 +10,22 @@ import (
 
 const TraceField = "trace_id"
 
-// Create a context with TraceID
+// Create a context with trace_id
 func CreateWithTrace() context.Context {
-	ctx := context.Background()
-
 	traceID, err := nanoid.New()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	return context.WithValue(ctx, TraceField, traceID)
+	return context.WithValue(context.Background(), TraceField, traceID)
+}
+
+// AddTrace add trace_id in context
+func AddTrace(c context.Context) context.Context {
+	traceID, err := nanoid.New()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return context.WithValue(c, TraceField, traceID)
 }
