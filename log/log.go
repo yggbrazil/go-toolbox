@@ -50,6 +50,11 @@ func Debugf(format string, v ...interface{}) {
 	}
 }
 
+// Println use the same Println for the standart log lib
+func Println(i ...interface{}) {
+	log.Println(i...)
+}
+
 // File save ou create a new log file with errors
 func File(file, text string) error {
 	if len(file) < 1 {
