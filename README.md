@@ -19,6 +19,9 @@ go get -u github.com/yggbrazil/go-toolbox
 
 [check](https://github.com/yggbrazil/go-toolbox/tree/master/check) É solução para poder utilizar operador ternário em Golang
 
+## context ##
+
+[context](https://github.com/yggbrazil/go-toolbox/tree/master/context) É um wrapper da lig context do GO com alguns helpers
 ## cookie ##
 
 [cookie](https://github.com/yggbrazil/go-toolbox/tree/master/cookie) É um lib para adicionar e deletar cookie no framework [Echo](https://github.com/labstack/echo)
