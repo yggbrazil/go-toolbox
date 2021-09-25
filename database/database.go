@@ -12,6 +12,12 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const (
+	TypePostgres = "postgres"
+	TypeMysql    = "mysql"
+	TypeSQLite   = "sqlite"
+)
+
 type Config struct {
 	FilePath           string
 	ID                 string `json:"id"`
@@ -46,7 +52,7 @@ func connect(config Config) (*sqlx.DB, error) {
 	}
 
 	switch config.Type {
-	case "postgres":
+	case TypePostgres:
 		db, err = sqlx.Connect("postgres", fmt.Sprintf("user=%s port=%d password=%s host=%s dbname=%s sslmode=%s",
 			config.User,
 			config.Port,
@@ -56,7 +62,7 @@ func connect(config Config) (*sqlx.DB, error) {
 			config.SSLMode,
 		))
 
-	case "mysql":
+	case TypeMysql:
 		db, err = sqlx.Connect("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 			config.User,
 			config.Password,
@@ -65,7 +71,7 @@ func connect(config Config) (*sqlx.DB, error) {
 			config.DataBase,
 		))
 
-	case "sqlite3":
+	case TypeSQLite:
 		db, err = sqlx.Connect("sqlite3", config.PathToDBFile)
 
 	default:
