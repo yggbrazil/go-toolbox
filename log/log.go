@@ -4,24 +4,48 @@ package log
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
-var debug = false
+var log *Log
+var lock = &sync.Mutex{}
+
+type Log struct {
+	*logrus.Logger
+	debug bool
+}
+
+func New() *Log {
+	lock.Lock()
+	defer lock.Unlock()
+
+	if log == nil {
+		l := logrus.New()
+		l.SetFormatter(&logrus.JSONFormatter{})
+
+		log = &Log{
+			Logger: l,
+		}
+	}
+
+	return log
+}
 
 // EnableDebug active the debug mode
-func EnableDebug(enable bool) {
-	debug = enable
+func (l *Log) EnableDebug(enable bool) {
+	l.debug = enable
 }
 
 // Error print in terminal the error message and the line of code with de error
-func Error(e error) {
+func (l *Log) Error(e error) {
 	pc := make([]uintptr, 10)
 	runtime.Callers(2, pc)
 	f := runtime.FuncForPC(pc[0])
@@ -33,30 +57,29 @@ func Error(e error) {
 		log.Println(err)
 	}
 
-	fmt.Printf("ERROR: %s | FILE: %s:%d | LINE: %d | FUNCTION: %s | HOSTNAME: %s\n", e.Error(), file, line, line, f.Name(), hostname)
+	file_path := fmt.Sprintf("%s:%d", file, line)
+
+	l.WithField("file_path", file_path).
+		WithField("hostname", hostname).
+		Error(e.Error())
 }
 
 // Debug is a function for print in terminal if the variable debug it's true
-func Debug(a ...interface{}) {
-	if debug {
+func (l *Log) Debug(a ...interface{}) {
+	if l.debug {
 		log.Println(a...)
 	}
 }
 
 // Debugf is a function for print formated in terminal if the variable debug it's true
-func Debugf(format string, v ...interface{}) {
-	if debug {
+func (l *Log) Debugf(format string, v ...interface{}) {
+	if l.debug {
 		log.Printf(format, v...)
 	}
 }
 
-// Println use the same Println for the standart log lib
-func Println(i ...interface{}) {
-	log.Println(i...)
-}
-
 // File save ou create a new log file with errors
-func File(file, text string) error {
+func (l *Log) File(file, text string) error {
 	if len(file) < 1 {
 		return errors.New("invalid file name")
 	}
@@ -111,7 +134,7 @@ func createFileIfNotExists(filePath string) (f *os.File) {
 }
 
 //SetOutputFiles set a new path for logs
-func SetOutputFiles(outfilePath, errfilePath string) {
+func (l *Log) SetOutputFiles(outfilePath, errfilePath string) {
 	outFile := createFileIfNotExists(outfilePath)
 	errFile := createFileIfNotExists(errfilePath)
 
@@ -120,22 +143,4 @@ func SetOutputFiles(outfilePath, errfilePath string) {
 
 	syscall.Dup2(int(outFile.Fd()), 1) /* -- stdout */
 	syscall.Dup2(int(errFile.Fd()), 2) /* -- stderr */
-}
-
-// ReturnDetailsError return the error message and the line of code with de error
-func ReturnDetailsError(e error) (buildedErrorDetails string) {
-	pc := make([]uintptr, 10)
-	runtime.Callers(2, pc)
-	f := runtime.FuncForPC(pc[0])
-	file, line := f.FileLine(pc[0])
-
-	hostname, err := os.Hostname()
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	buildedErrorDetails = fmt.Sprintf("ERROR: %s | FILE: %s:%d | LINE: %d | FUNCTION: %s | HOSTNAME: %s\n", e.Error(), file, line, line, f.Name(), hostname)
-
-	return
 }

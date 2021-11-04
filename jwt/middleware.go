@@ -29,7 +29,8 @@ func MiddlewareForHeader(secret string) echo.MiddlewareFunc {
 			claims, err = VerifyTokenAndGetClaims(token, secret)
 
 			if err != nil {
-				log.Error(err)
+				l := log.New()
+				l.Error(err)
 				return &echo.HTTPError{Code: 401, Message: "Token inválido"}
 			}
 

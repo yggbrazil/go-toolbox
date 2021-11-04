@@ -73,9 +73,10 @@ func Created(b interface{}) (err error) {
 
 // Error ...
 func Error(e error) error {
+	l := log.New()
 	_, ok := e.(*echo.HTTPError)
 	if !ok {
-		log.Println(e)
+		l.Println(e)
 		return echo.NewHTTPError(500, "Erro interno no servidor.")
 	}
 

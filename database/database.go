@@ -1,11 +1,12 @@
 package database
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/yggbrazil/go-toolbox/json"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
@@ -111,7 +112,12 @@ func GetByFile(filePath string) (*sqlx.DB, error) {
 		err    error
 	)
 
-	if err = json.UnmarshalFile(filePath, &config); err != nil {
+	fileBytes, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(fileBytes, &config); err != nil {
 		return nil, err
 	}
 
