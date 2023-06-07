@@ -2,6 +2,7 @@ package gcp_pubsub
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -10,7 +11,7 @@ import (
 )
 
 type PubSub interface {
-	Publish(topic, message string) error
+	Publish(topic_name string, message interface{}) error
 	Subscribre(topic_name, subscription_name string, subscription_function SubscriptionFunc) error
 }
 
@@ -32,14 +33,31 @@ func NewPubSub() PubSub {
 	}
 }
 
-func (p *pubSub) Publish(topic_name, message string) error {
+func (p *pubSub) Publish(topic_name string, message interface{}) error {
 	err := p.createTopic(topic_name)
 	if err != nil {
 		return err
 	}
 
+	var data []byte
+	switch message.(type) {
+	case string:
+		data = []byte(message.(string))
+
+	case []byte:
+		data = message.([]byte)
+
+	default:
+		j, err := json.Marshal(message)
+		if err != nil {
+			return err
+		}
+
+		data = j
+	}
+
 	p.topic.Publish(context.Background(), &pubsub.Message{
-		Data: []byte(message),
+		Data: data,
 	})
 
 	return nil
@@ -66,6 +84,10 @@ func (p *pubSub) Subscribre(topic_name, subscription_name string, subscription_f
 	})
 
 	return nil
+}
+
+func (p *pubSub) GetClient() *pubsub.Client {
+	return p.client
 }
 
 func (p *pubSub) createTopic(topic_name string) error {
